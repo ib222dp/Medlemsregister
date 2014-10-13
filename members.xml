@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<members>
+  <member>
+    <lastname>Nu</lastname>
+    <firstname>Emma</firstname>
+    <persno>19750505</persno>
+    <boats>
+      <boat>
+        <boattype>Segelbåt</boattype>
+        <boatlength>8</boatlength>
+      </boat>
+    </boats>
+  </member>
+  <member>
+    <lastname>Nu</lastname>
+    <firstname>Ellen</firstname>
+    <persno>19650505</persno>
+    <boats>
+      <boat>
+        <boattype>Motorbåt</boattype>
+        <boatlength>7</boatlength>
+      </boat>
+    </boats>
+  </member>
+  <member>
+    <lastname>Johansson</lastname>
+    <firstname>Anna</firstname>
+    <persno>19550505</persno>
+    <boats/>
+  </member>
+</members>
