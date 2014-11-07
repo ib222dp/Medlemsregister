@@ -1,6 +1,8 @@
 <?php
 
-class Member {
+require_once("src/model/Repository.php");
+
+class Member extends Repository {
 	private $memberNo;
 	private $lastName;
 	private $firstName;
@@ -8,6 +10,8 @@ class Member {
 	private $boats;
 	
 	public function __construct($memberNo, $lastName, $firstName, $personalNo) {
+		parent::__construct();
+		
 		$this->memberNo = $memberNo;
 		$this->lastName = $lastName;
 		$this->firstName = $firstName;
@@ -44,48 +48,42 @@ class Member {
 		return $boat;
 	}
 	
-	public function loadFile() {
-		$members = simplexml_load_file("members.xml");
-		$file = "members.xml";
-		return array($members, $file);
-	}
-	
+	//Lägger till en ny båt i medlemmens båtlista i xml-filen "members"
 	public function createBoat($boatType, $boatLength) {
-		if(empty($boatType) || empty($boatLength)) {
-			$string = "Inget av fälten får vara tomma";
+		if(empty($boatLength)) {
+			$string = "Fyll i båtens längd";
 		}else {
-			$members = $this->loadFile();
 			$mNo = ($this->memberNo - 1);
-			$member = $members[0]->member[$mNo];
+			$member = $this->members->member[$mNo];
 			$boat = $member->boats->addChild("boat");
 			$boat->addChild("boattype", $boatType);
 			$boat->addChild("boatlength", $boatLength);
-			$members[0]->saveXML($members[1]);
+			$this->members->saveXML($this->file);
 			$string = "Båten har lagts till";
 		}
 		return $string;
 	}
 	
+	//Lägger till båtens nya uppgifter i medlemmens båtlista i xml-filen "members"
 	public function editBoat($boatNo, $boatType, $boatLength) {
-		if(empty($boatType) || empty($boatLength)) {
-			$string = "Inget av fälten får vara tomma";
+		if(empty($boatLength)) {
+			$string = "Fyll i båtens längd";
 		}else {
-			$members = $this->loadFile();
 			$mNo = ($this->memberNo - 1);
-			$member = $members[0]->member[$mNo];
+			$member = $this->members->member[$mNo];
 			$member->boats->boat[$boatNo]->boattype = $boatType;
 			$member->boats->boat[$boatNo]->boatlength = $boatLength;
-			$members[0]->saveXML($members[1]);
+			$this->members->saveXML($this->file);
 			$string = "Båtuppgifterna har uppdaterats";
 		}
 		return $string;
 	}
 	
+	//Raderar båten från medlemmens båtlista i xml-filen "members"
 	public function deleteBoat($boatNo) {
-		$members = $this->loadFile();
 		$mNo = ($this->memberNo-1);
-		unset($members[0]->member[$mNo]->boats->boat[$boatNo]);
-		$members[0]->saveXML($members[1]);
+		unset($this->members->member[$mNo]->boats->boat[$boatNo]);
+		$this->members->saveXML($this->file);
 		$string = "Båten har tagits bort";
 		return $string;
 	}
