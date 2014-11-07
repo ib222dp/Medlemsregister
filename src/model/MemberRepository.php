@@ -1,26 +1,28 @@
 <?php
 
+require_once("src/model/Repository.php");
 require_once("src/model/Member.php");
 require_once("src/model/Boat.php");
+require_once("src/model/BoatType.php");
 
-class MemberRepository {
-	private $members;
-	private $file;
+class MemberRepository extends Repository {
 	
 	public function __construct() {
-		$this->members = simplexml_load_file("members.xml");
-		$this->file = "members.xml";
+		parent::__construct();
 	}
 	
-	public function instantiateMember($member, $memberNo) {
+	//Instantierar nya Member-objekt (samt Boat-objekt och BoatType-objekt)
+	private function instantiateMember($member, $memberNo) {
 		$newMember = new Member($memberNo, (string)$member->lastname, (string)$member->firstname, (string)$member->persno);
 		foreach ($member->boats->boat as $boat){
-			$newBoat = new Boat((string)$boat->boattype, (string)$boat->boatlength);
+			$newBoatType = new BoatType((string)$boat->boattype);
+			$newBoat = new Boat($newBoatType, (string)$boat->boatlength);
 			$newMember->addBoat($newBoat);
 		}
 		return $newMember;
 	}
 	
+	//Returnerar en array med Member-objekt (de medlemmar som finns i xml-filen "members")
 	public function getMembers(){
 		$newMemberArray = array();
 		for($i = 0; $i < count($this->members); $i++){
@@ -30,12 +32,14 @@ class MemberRepository {
 		return $newMemberArray;
 	}
 	
+	//Returnerar det efterfrågade Member-objektet från xml-filen "members"
 	public function getMember($memberNo) {
 		$member = $this->members->member[$memberNo - 1];
 		$newMember = $this->instantiateMember($member, $memberNo);
 		return $newMember;
 	}
-
+	
+	//Lägger till en ny medlem i xml-filen "members"
 	public function createMember($lastName, $firstName, $persNo){
 		if(empty($lastName) || empty($firstName) || empty($persNo)) {
 			$string = "Inget av fälten får vara tomma";
@@ -51,6 +55,7 @@ class MemberRepository {
 		return $string;
 	}
 	
+	//Lägger till medlemmens nya uppgifter i xml-filen "members"
 	public function editMember($memberNo, $lastName, $firstName, $persNo) {
 		if(empty($lastName) || empty($firstName) || empty($persNo)) {
 			$string = "Inget av fälten får vara tomma";
@@ -64,7 +69,8 @@ class MemberRepository {
 		}
 		return $string;
 	}
-
+	
+	//Raderar medlemmen från xml-filen "members"
 	public function deleteMember($memberNo) {
 		unset($this->members->member[$memberNo - 1]);
 		$this->members->saveXML($this->file);
