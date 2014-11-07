@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<boattypes>
+  <boattype>Segelbåt</boattype>
+  <boattype>Motorseglare</boattype>
+  <boattype>Motorbåt</boattype>
+  <boattype>Kajak/Kanot</boattype>
+  <boattype>Övrigt</boattype>
+</boattypes>
